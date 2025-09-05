@@ -9,15 +9,21 @@
 plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     `java-gradle-plugin`
-
-    // Apply the Kotlin JVM plugin to add support for Kotlin.
-    alias(libs.plugins.kotlin.jvm)
 }
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
+
+
+sourceSets {
+    main {
+        resources.srcDirs("src/main/resources")
+        java.setSrcDirs(listOf("src/main/kotlin"))
+    }
+}
+
 
 testing {
     suites {
@@ -50,8 +56,8 @@ testing {
 gradlePlugin {
     // Define the plugin
     val greeting by plugins.creating {
-        id = "org.example.greeting"
-        implementationClass = "org.example.PluginBuildPlugin"
+        id = "com.sparrow.plugin.greeting"
+        implementationClass = "com.sparrow.plugin.PluginBuildPlugin"
     }
 }
 

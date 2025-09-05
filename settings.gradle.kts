@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "skyhigh-16kb-doctor"
 include(":app")
+includeBuild("skyhigh-16kb-doctor/plugin")
  

@@ -6,17 +6,17 @@ else
 fi
 
 # Copy all files as shown below into their respective locations
-../gradlew init --dsl kotlin --type kotlin-gradle-plugin --project-name plugin
+./gradlew init --dsl kotlin --type kotlin-gradle-plugin --project-name plugin
 
 # Build the plugin
-../gradlew -p plugin build
+./gradlew -p plugin build
 
 # Run tests
-../gradlew -p plugin test
+./gradlew -p plugin test
 
 # Test with sample app
 #cd app
-#../gradlew skyhighDoctor
+#./gradlew skyhighDoctor
 #
 ## Publish to local repository for testing
-#../gradlew -p plugin-build publishToMavenLocal
+#./gradlew -p plugin-build publishToMavenLocal

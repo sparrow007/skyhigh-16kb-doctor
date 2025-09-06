@@ -85,10 +85,14 @@ gradlePlugin {
     website.set("https://github.com/sparrow007/skyhigh-16kb-doctor")
     vcsUrl.set("https://github.com/sparrow007/skyhigh-16kb-doctor")
 
-    // Define the plugin
-    val greeting by plugins.creating {
-        id = "com.sparrow.plugin.greeting"
-        implementationClass = "com.sparrow.plugin.PluginBuildPlugin"
+    plugins {
+        create("skyhighDoctorPlugin") {
+            id = "com.sparrow.skyhigh.16kb-doctor"
+            implementationClass = "com.sparrow.plugin.SkyHighDoctorPlugin"
+            displayName = "SkyHigh 16KB Page Alignment Doctor"
+            description = "Gradle plugin to scan Android apps for 16KB page alignment compatibility"
+            tags.set(listOf("android", "kotlin", "plugin", "16kb", "page-alignment", "doctor"))
+        }
     }
 }
 

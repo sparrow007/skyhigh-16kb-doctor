@@ -1,14 +1,12 @@
 package com.sparrow.plugin.worker
 
 import com.sparrow.plugin.elf.ElfReader
-import org.gradle.workers.WorkAction
-import org.gradle.workers.WorkParameters
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.workers.WorkAction
+import org.gradle.workers.WorkParameters
 import java.io.File
 import java.io.FileWriter
-import java.nio.file.Files
-import org.gradle.workers.WorkerExecutor
 
 interface SoScanParameters : WorkParameters {
     val input: RegularFileProperty
@@ -28,7 +26,7 @@ abstract class SoScanWorkAction : WorkAction<SoScanParameters> {
 
         val pAlign = try {
             ElfReader.maxPAlign(bytes)
-        } catch (t: Throwable) {
+        } catch (_: Throwable) {
             0L
         }
         val compatible = pAlign >= maxAlign

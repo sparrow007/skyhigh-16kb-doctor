@@ -1,4 +1,4 @@
-package com.sparrow.plugin
+package com.sparrow.plugin.util
 
 import java.io.File
 import java.util.zip.ZipEntry
@@ -28,7 +28,7 @@ object ZipUtils {
     fun readEntryBytes(zip: File, entryPath: String): ByteArray {
         ZipFile(zip).use { zf ->
             val e = zf.getEntry(entryPath) ?: throw IllegalArgumentException("Entry $entryPath not found in ${zip.name}")
-            val isCompressed = e.method != ZipEntry.STORED
+           // val isCompressed = e.method != ZipEntry.STORED
             val bytes = zf.getInputStream(e).readBytes()
             // If compressed, we still return the bytes (decompressed) but caller should be warned about compression.
             return bytes

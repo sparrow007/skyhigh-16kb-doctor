@@ -1,6 +1,16 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.sparrow.skyhigh.16kb-doctor")
+}
+
+
+skyhighDoctor {
+    variant.set("debug")
+    assemble.set(true)
+    scanApk.set(true)
+    scanBundle.set(false)
+    maxAlign.set(16384L) // or any value you want
 }
 
 android {
@@ -43,4 +53,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("androidx.media3:media3-exoplayer:1.4.1")
+    implementation("org.tensorflow:tensorflow-lite:2.16.1")
+
+
 }

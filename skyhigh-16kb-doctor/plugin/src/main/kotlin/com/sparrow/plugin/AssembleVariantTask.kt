@@ -31,7 +31,7 @@ open class AssembleVariantTask : DefaultTask() {
         }
 
         // Try to find assemble task names commonly used by AGP
-        val variantCapitalized = ext.variant.get().capitalize()
+        val variantCapitalized = ext.variant.get().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
         val candidateNames = listOf("assemble$variantCapitalized", "assemble${variantCapitalized}UnitTest", "assemble")
         val found = candidateNames.mapNotNull { name ->
             project.tasks.findByName(name)

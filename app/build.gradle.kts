@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.sparrow.skyhigh.16kb-doctor")
 }
 
 android {

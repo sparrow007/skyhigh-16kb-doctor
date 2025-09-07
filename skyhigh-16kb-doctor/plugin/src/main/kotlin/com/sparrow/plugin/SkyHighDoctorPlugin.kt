@@ -10,6 +10,7 @@ import org.gradle.api.Project
 class SkyHighDoctorPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val extension = project.extensions.create("skyhighDoctor", DoctorExtension::class.java, project.objects)
+        extension.assemble
 
         // create tasks
         val assembleTask = project.tasks.register(

@@ -1,12 +1,12 @@
 package com.sparrow.plugin
 
 
+import com.sparrow.plugin.tasks.AggregateReportTask
+import com.sparrow.plugin.tasks.ScanNativeSoTask
+import com.sparrow.plugin.tasks.ScanOutputsTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import java.io.File
-import kotlin.getOrElse
-import kotlin.text.get
-import kotlin.text.set
 
 /**
  * Entry point for the Gradle plugin.
@@ -29,6 +29,7 @@ class SkyHighDoctorPlugin : Plugin<Project> {
                 )
             )
             this.bundleDir.set(File(project.projectDir, "build/outputs/bundle/${extension.variant.get()}"))
+            this.outputDir.set(project.layout.buildDirectory.dir("skyhigh/reports/scan").get().asFile)
             dependsOn("assemble")
         }
 
@@ -45,23 +46,12 @@ class SkyHighDoctorPlugin : Plugin<Project> {
                 listOf("debugCompileClasspath", "releaseCompileClasspath").forEach { configName ->
                     val config = subProj.configurations.findByName(configName)
                     if (config != null && config.isCanBeResolved) {
-                        println("  ⚙️  Checking configuration: $configName")
+                        logger.lifecycle("  ⚙️  Checking configuration: $configName")
 
                         val artifacts = config.incoming.artifactView {
                             isLenient = true
                         }.artifacts.artifacts
-
-                        println("    📦 Found ${artifacts.size} total artifacts in $configName:")
-
                         aarFiles.addAll(artifacts.map { it.file }.filter { it.extension == "aar" })
-
-                        //print each aar files
-                        artifacts.forEach { artifact ->
-                            val file = artifact.file
-                            if (file.extension == "aar") {
-                                println("      - ${file.name}")
-                            }
-                        }
                     }
                 }
             }
@@ -71,7 +61,6 @@ class SkyHighDoctorPlugin : Plugin<Project> {
             this.targetSoFiles.set(listOf())
             mustRunAfter(scanTask)// or set specific .so names if needed
         }
-
 
         val reportTask = project.tasks.register("skyhighReport", AggregateReportTask::class.java) {
             group = "verification"
@@ -83,25 +72,6 @@ class SkyHighDoctorPlugin : Plugin<Project> {
             this.ownersFile.set(project.layout.buildDirectory.file("skyhigh/reports/owners/owners.json"))
             mustRunAfter(scanTask, ownersTask)
         }
-
-//
-//        val reportTask = project.tasks.register("skyhighReport", AggregateReportTask::class.java) {
-//            group = "verification"
-//            description = "Aggregate findings and owners into final reports"
-//            this.extension.set(extension)
-//            mustRunAfter(scanTask, ownersTask)
-//        }
-//
-//        // top-level orchestration task
-//        val orchestrate = project.tasks.register("skyhighDoctor") {
-//            group = "verification"
-//            description = "Run the full SkyHigh 16KB doctor pipeline"
-//            dependsOn(assembleTask, scanTask, ownersTask, reportTask)
-//        }
-//
-//        project.afterEvaluate {
-//            project.logger.lifecycle("SkyHighDoctor configured. Variant=${extension.variant.get()} assemble=${extension.assemble.get()}")
-//        }
 
         project.tasks.register("skyhighDoctor") {
             group = "verification"

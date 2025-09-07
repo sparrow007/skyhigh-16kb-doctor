@@ -1,6 +1,5 @@
 package com.sparrow.plugin
 
-import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFileProperty

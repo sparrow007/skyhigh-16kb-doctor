@@ -1,12 +1,16 @@
-package com.sparrow.plugin
+package com.sparrow.plugin.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.FileWriter
 import java.util.zip.ZipFile
-
 
 abstract class ScanNativeSoTask : DefaultTask() {
 

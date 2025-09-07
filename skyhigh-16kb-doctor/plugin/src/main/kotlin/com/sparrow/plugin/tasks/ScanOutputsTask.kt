@@ -1,21 +1,22 @@
-package com.sparrow.plugin
+package com.sparrow.plugin.tasks
 
-
+import com.sparrow.plugin.util.ZipUtils
 import com.sparrow.plugin.worker.SoScanWorkAction
 import org.gradle.api.DefaultTask
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkerExecutor
 import java.io.File
-import java.util.concurrent.ConcurrentLinkedQueue
 import javax.inject.Inject
-import kotlin.text.get
 
 abstract class ScanOutputsTask @Inject constructor(
     private val workerExecutor: WorkerExecutor,
-    private val objectFactor: ObjectFactory) : DefaultTask() {
-    
+    private val objectFactor: ObjectFactory
+) : DefaultTask() {
+
     @get:Input
     abstract val variant: Property<String>
 
@@ -32,12 +33,11 @@ abstract class ScanOutputsTask @Inject constructor(
     abstract val bundleDir: Property<File>
 
     @get:OutputDirectory
-    val outputDir = project.layout.buildDirectory.dir("skyhigh/reports/scan")
+    abstract val outputDir: Property<File>
 
     @TaskAction
     fun scan() {
-        val outDir = outputDir.get().asFile.apply { mkdirs() }
-        val findings = ConcurrentLinkedQueue<Map<String, Any>>()
+        val outDir = outputDir.get().apply { mkdirs() }
 
         val candidates = mutableListOf<File>()
 
@@ -61,8 +61,6 @@ abstract class ScanOutputsTask @Inject constructor(
 
        // val parallelism = parallelism.get().coerceAtLeast(1)
         val svc = workerExecutor.noIsolation()
-
-        logger.lifecycle("Scanning ${candidates.size} artifacts with parallelism=0 ...")
 
         //print candidates
         candidates.forEach { logger.lifecycle("  - ${it.name} (lastModified=${it.lastModified()})") }

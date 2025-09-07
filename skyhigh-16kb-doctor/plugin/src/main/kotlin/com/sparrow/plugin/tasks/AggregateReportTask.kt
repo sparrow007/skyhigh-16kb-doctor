@@ -1,15 +1,14 @@
-
-package com.sparrow.plugin
+package com.sparrow.plugin.tasks
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.FileWriter
@@ -43,10 +42,7 @@ abstract class AggregateReportTask : DefaultTask() {
         val jsonFiles = scanDirectory.listFiles()?.filter { it.name.endsWith(".json") } ?: emptyList()
         jsonFiles.forEach { jf ->
             val j = jf.readText()
-            logger.lifecycle("Reading JSON file: ${jf}")
             val map = parseFlatJson(j)
-                //print the whole map for debugging
-                .also { logger.lifecycle("Parsed JSON: $it") }
             findings.add(map)
         }
 
@@ -57,21 +53,16 @@ abstract class AggregateReportTask : DefaultTask() {
             }.toList()
         }
 
-// Usage in aggregate():
+
         val ownersMap = mutableMapOf<String, String>()
         if (owners.exists()) {
             val ownersList = parseJsonArray(owners.readText())
             ownersList.forEach { obj ->
-                logger.lifecycle("Processing owner entry: $obj")
                 val filePath = obj["filePath"] ?: "unknown"
-                if (extractAbi(filePath) == "x86_64") {
-                    logger.lifecycle("Found x86_64 in owners.json: $filePath")
-                }
                 val owner = obj["ownerCoordinate"] ?: return@forEach
                 val abi = extractAbi(filePath)
                 val soName = filePath.substringAfterLast('/')
                 val ownerKey = "$abi|$soName"
-              //  logger.lifecycle("Mapping owner: $ownerKey -> $owner")
                 ownersMap[ownerKey] = owner
             }
         }
@@ -86,7 +77,7 @@ abstract class AggregateReportTask : DefaultTask() {
                 val owner = ownersMap[ownerKey] ?: "unknown"
                 val pAlign = f["p_align"] ?: "0"
                 val compatible = f["compatible"] ?: "false"
-                val remediation = if (compatible.toBoolean()) "" else remediationHint(owner, path)
+                val remediation = if (compatible.toBoolean()) "" else remediationHint(owner)
                 w.append("${f["artifact"]},$path,${f["abi"]},$pAlign,$compatible,$owner,\"$remediation\"\n")
             }
         }
@@ -103,7 +94,7 @@ abstract class AggregateReportTask : DefaultTask() {
                 val owner = ownersMap[ownerKey] ?: "unknown"
                 val pAlign = f["p_align"] ?: "0"
                 val compatible = f["compatible"] ?: "false"
-                val remediation = if (compatible.toBoolean()) "" else remediationHint(owner, path)
+                val remediation = if (compatible.toBoolean()) "" else remediationHint(owner)
                 w.append("| ${f["artifact"]} | $path | ${f["abi"]} | $pAlign | $compatible | $owner | $remediation |\n")
             }
         }
@@ -142,7 +133,7 @@ abstract class AggregateReportTask : DefaultTask() {
                 val owner = ownersMap[ownerKey] ?: "unknown"
                 val pAlign = f["p_align"] ?: "0"
                 val compatible = f["compatible"] ?: "false"
-                val remediation = if (compatible.toBoolean()) "" else remediationHint(owner, path)
+                val remediation = if (compatible.toBoolean()) "" else remediationHint(owner)
                 w.append("""
             <tr>
                 <td>${f["artifact"]}</td>
@@ -209,13 +200,11 @@ abstract class AggregateReportTask : DefaultTask() {
 
     private fun extractAbi(path: String): String {
         val regex = Regex("(armeabi-v7a|arm64-v8a|x86_64|x86|mips|mips64)")
-
-        logger.lifecycle("Extracting ABI from path: $path and regex: ${regex.find(path)?.value}")
         return regex.find(path)?.value ?: "unknown"
     }
 
 
-    private fun remediationHint(owner: String, path: String): String {
+    private fun remediationHint(owner: String): String {
         return when {
             owner.startsWith(":") -> "Contact module owner $owner — rebuild native lib with 16KB p_align or set linker flags to align sections."
             owner.contains(":") -> "Open issue with dependency $owner and request 16KB p_align aligned builds."

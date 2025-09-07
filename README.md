@@ -10,7 +10,7 @@ In your Android application module (or sample-app):
 1. Include the plugin (use `includeBuild` during development or publish and apply):
 ```kotlin
 plugins {
-  id("io.skyhigh.doctor")
+  id("com.sparrow.skyhigh.16kb-doctor")
 }
 
 skyhighDoctor {

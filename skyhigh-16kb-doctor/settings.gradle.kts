@@ -7,4 +7,6 @@
  */
 
 rootProject.name = "skyhigh-16kb-doctor-plugin"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include("plugin")

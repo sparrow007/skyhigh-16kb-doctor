@@ -1,25 +1,37 @@
 package com.sparrow.plugin
 
-
 import java.io.File
+import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
-/**
- * Utility functions for working with ZIP files (APK/AAB).
- */
 object ZipUtils {
-
     /**
-     * Execute a block of code with a ZipFile, automatically closing it afterwards.
+     * List paths of entries ending with .so under lib/ or jni/ directories.
      */
-    inline fun <T> withZipFile(file: File, block: (ZipFile) -> T): T {
-        return ZipFile(file).use(block)
+    fun listSoEntries(zip: File): List<String> {
+        val list = mutableListOf<String>()
+        if (!zip.exists()) return list
+        ZipFile(zip).use { zf ->
+            zf.entries().asSequence().forEach { e ->
+                if (!e.isDirectory && e.name.endsWith(".so")) {
+                    // include entries under lib/ or jni/ or anywhere .so found
+                    list.add(e.name)
+                }
+            }
+        }
+        return list
     }
 
     /**
-     * Check if a ZIP entry is compressed.
+     * Read entry bytes for a given entry path.
      */
-    fun isCompressed(entry: java.util.zip.ZipEntry): Boolean {
-        return entry.method != java.util.zip.ZipEntry.STORED
+    fun readEntryBytes(zip: File, entryPath: String): ByteArray {
+        ZipFile(zip).use { zf ->
+            val e = zf.getEntry(entryPath) ?: throw IllegalArgumentException("Entry $entryPath not found in ${zip.name}")
+            val isCompressed = e.method != ZipEntry.STORED
+            val bytes = zf.getInputStream(e).readBytes()
+            // If compressed, we still return the bytes (decompressed) but caller should be warned about compression.
+            return bytes
+        }
     }
 }

@@ -4,111 +4,95 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 /**
- * ELF file reader for extracting program header alignment information.
+ * Lightweight ELF reader to extract program header p_align fields.
  *
- * Supports both 32-bit and 64-bit ELF files with little and big endian byte ordering.
+ * Supports ELF32/ELF64 and both endiannesses.
  */
-class ElfReader private constructor(
-    private val buffer: ByteBuffer,
-    private val elfClass: Int, // 1 = ELF32, 2 = ELF64
-    private val elfData: Int   // 1 = little endian, 2 = big endian
-) {
+object ElfReader {
+    private const val EI_CLASS = 4
+    private const val EI_DATA = 5
+    private const val ELF_MAGIC0: Byte = 0x7F
+    private const val ELF_MAGIC1: Byte = 0x45 // 'E'
+    private const val ELF_MAGIC2: Byte = 0x4C // 'L'
+    private const val ELF_MAGIC3: Byte = 0x46 // 'F'
 
-    companion object {
-        private const val ELF_MAGIC = 0x7F454C46 // 0x7F + "ELF"
-        private const val EI_CLASS = 4
-        private const val EI_DATA = 5
-        private const val ELFCLASS32 = 1
-        private const val ELFCLASS64 = 2
-        private const val ELFDATA2LSB = 1
-        private const val ELFDATA2MSB = 2
-
-        /**
-         * Parse ELF file from byte array.
-         * Returns null if the file is not a valid ELF or cannot be parsed.
-         */
-        fun parse(bytes: ByteArray): ElfReader? {
-            if (bytes.size < 64) return null // Minimum ELF header size
-
-            val buffer = ByteBuffer.wrap(bytes)
-            buffer.order(ByteOrder.LITTLE_ENDIAN) // Start with little endian for reading header
-
-            // Check ELF magic
-            val magic = buffer.getInt(0)
-            if (magic != ELF_MAGIC.toInt()) return null
-
-            // Get class and data encoding
-            val elfClass = buffer.get(EI_CLASS).toInt() and 0xFF
-            val elfData = buffer.get(EI_DATA).toInt() and 0xFF
-
-            if (elfClass !in 1..2 || elfData !in 1..2) return null
-
-            // Set correct byte order
-            buffer.order(if (elfData == ELFDATA2LSB) ByteOrder.LITTLE_ENDIAN else ByteOrder.BIG_ENDIAN)
-
-            return ElfReader(buffer, elfClass, elfData)
-        }
-    }
+    data class ElfInfo(val is64: Boolean, val order: ByteOrder, val phOff: Long, val phEntSize: Int, val phNum: Int)
 
     /**
-     * Get the maximum p_align value from all program headers.
+     * Parse the ELF buffer and return the maximum p_align across program headers.
+     * Returns 0 if no p_align found.
      */
-    fun maxPAlign(): Long {
+    fun maxPAlign(buf: ByteArray): Long {
         try {
-            val programHeaders = getProgramHeaders()
-            return programHeaders.maxOfOrNull { it.pAlign } ?: 0L
-        } catch (e: Exception) {
-            // Return 0 for any parsing errors
+            val elf = parseHeader(buf) ?: return 0L
+            var maxAlign = 0L
+            var offset = elf.phOff
+            for (i in 0 until elf.phNum) {
+                if (offset + elf.phEntSize > buf.size) break
+                val entryOffset = offset.toInt()
+                val align = if (elf.is64) {
+                    // p_align at entryOffset + 48 (u64)
+                    val off = entryOffset + 48
+                    if (off + 8 <= buf.size) {
+                        readU64(buf, off, elf.order)
+                    } else 0L
+                } else {
+                    // p_align at entryOffset + 28 (u32)
+                    val off = entryOffset + 28
+                    if (off + 4 <= buf.size) {
+                        readU32(buf, off, elf.order).toLong()
+                    } else 0L
+                }
+                if (align > maxAlign) maxAlign = align
+                offset += elf.phEntSize
+            }
+            return maxAlign
+        } catch (t: Throwable) {
+            // Graceful: log and return 0 to mean "unknown"
             return 0L
         }
     }
 
-    /**
-     * Get all program headers from the ELF file.
-     */
-    private fun getProgramHeaders(): List<ProgramHeader> {
-        val headers = mutableListOf<ProgramHeader>()
-
-        // Read ELF header fields
-        val (phOff, phEntSize, phNum) = if (elfClass == ELFCLASS64) {
-            // ELF64 offsets: e_phoff at 32, e_phentsize at 54, e_phnum at 56
-            Triple(
-                buffer.getLong(32),
-                buffer.getShort(54).toInt() and 0xFFFF,
-                buffer.getShort(56).toInt() and 0xFFFF
-            )
+    fun parseHeader(buf: ByteArray): ElfInfo? {
+        if (buf.size < 16) return null
+        if (buf[0] != ELF_MAGIC0 || buf[1] != ELF_MAGIC1 || buf[2] != ELF_MAGIC2 || buf[3] != ELF_MAGIC3) {
+            return null
+        }
+        val cls = buf[EI_CLASS].toInt()
+        val data = buf[EI_DATA].toInt()
+        val order = when (data) {
+            1 -> ByteOrder.LITTLE_ENDIAN
+            2 -> ByteOrder.BIG_ENDIAN
+            else -> ByteOrder.nativeOrder()
+        }
+        val is64 = (cls == 2)
+        return if (is64) {
+            if (buf.size < 64) return null
+            val e_phoff = readU64(buf, 32, order)
+            val e_phentsize = readU16(buf, 54, order)
+            val e_phnum = readU16(buf, 56, order)
+            ElfInfo(true, order, e_phoff, e_phentsize, e_phnum)
         } else {
-            // ELF32 offsets: e_phoff at 28, e_phentsize at 42, e_phnum at 44
-            Triple(
-                buffer.getInt(28).toLong() and 0xFFFFFFFFL,
-                buffer.getShort(42).toInt() and 0xFFFF,
-                buffer.getShort(44).toInt() and 0xFFFF
-            )
+            if (buf.size < 52) return null
+            val e_phoff = readU32(buf, 28, order).toLong()
+            val e_phentsize = readU16(buf, 42, order)
+            val e_phnum = readU16(buf, 44, order)
+            ElfInfo(false, order, e_phoff, e_phentsize, e_phnum)
         }
-
-        // Read each program header
-        for (i in 0 until phNum) {
-            val offset = phOff + (i * phEntSize)
-            if (offset + phEntSize > buffer.capacity()) break
-
-            val pAlign = if (elfClass == ELFCLASS64) {
-                // ELF64: p_align at offset 48 within program header (8 bytes)
-                buffer.getLong((offset + 48).toInt())
-            } else {
-                // ELF32: p_align at offset 28 within program header (4 bytes)
-                buffer.getInt((offset + 28).toInt()).toLong() and 0xFFFFFFFFL
-            }
-
-            headers.add(ProgramHeader(pAlign = pAlign))
-        }
-
-        return headers
     }
 
-    /**
-     * Represents a program header with alignment information.
-     */
-    private data class ProgramHeader(
-        val pAlign: Long
-    )
+    private fun readU16(buf: ByteArray, offset: Int, order: java.nio.ByteOrder): Int {
+        val bb = ByteBuffer.wrap(buf, offset, 2).order(order)
+        return bb.short.toInt() and 0xffff
+    }
+
+    private fun readU32(buf: ByteArray, offset: Int, order: java.nio.ByteOrder): Int {
+        val bb = ByteBuffer.wrap(buf, offset, 4).order(order)
+        return bb.int
+    }
+
+    private fun readU64(buf: ByteArray, offset: Int, order: java.nio.ByteOrder): Long {
+        val bb = ByteBuffer.wrap(buf, offset, 8).order(order)
+        return bb.long
+    }
 }

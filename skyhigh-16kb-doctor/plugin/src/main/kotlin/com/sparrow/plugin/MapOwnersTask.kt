@@ -1,7 +1,6 @@
 package com.sparrow.plugin
 
 
-import io.skyhigh.doctor.util.ZipUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.*
 import java.io.File

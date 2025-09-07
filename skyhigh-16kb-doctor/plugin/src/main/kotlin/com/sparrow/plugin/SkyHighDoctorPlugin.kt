@@ -1,10 +1,8 @@
 package com.sparrow.plugin
 
 
-import com.sparrow.plugin.MapOwnersTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import java.io.File
 
 /**
  * Entry point for the Gradle plugin.

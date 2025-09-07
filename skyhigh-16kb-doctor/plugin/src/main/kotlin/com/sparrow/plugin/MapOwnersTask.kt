@@ -1,10 +1,11 @@
 package com.sparrow.plugin
 
-
 import org.gradle.api.DefaultTask
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.*
 import java.io.File
 import java.io.FileWriter
+
 
 @CacheableTask
 open class MapOwnersTask : DefaultTask() {

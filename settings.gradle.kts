@@ -10,6 +10,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         google()
+        maven("https://jitpack.io")
     }
     plugins {
         kotlin("jvm") version "2.2.0"
@@ -23,6 +24,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://jitpack.io")
     }
 }
 

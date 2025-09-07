@@ -3,39 +3,55 @@ package com.sparrow.plugin
 
 import com.sparrow.plugin.worker.SoScanWorkAction
 import org.gradle.api.DefaultTask
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.workers.WorkerExecutor
 import java.io.File
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.inject.Inject
+import kotlin.text.get
 
-@CacheableTask
-open class ScanOutputsTask @Inject constructor(private val workerExecutor: WorkerExecutor) : DefaultTask() {
-    @get:Nested
-    val extension = project.objects.property(DoctorExtension::class.java)
+abstract class ScanOutputsTask @Inject constructor(
+    private val workerExecutor: WorkerExecutor,
+    private val objectFactor: ObjectFactory) : DefaultTask() {
+    
+    @get:Input
+    abstract val variant: Property<String>
+
+    @get:Input
+    abstract val scanApk: Property<Boolean>
+
+    @get:Input
+    abstract val scanBundle: Property<Boolean>
+
+    @get:Input
+    abstract val apkDir: Property<File>
+
+    @get:Input
+    abstract val bundleDir: Property<File>
 
     @get:OutputDirectory
     val outputDir = project.layout.buildDirectory.dir("skyhigh/reports/scan")
 
     @TaskAction
     fun scan() {
-        val ext = extension.get()
         val outDir = outputDir.get().asFile.apply { mkdirs() }
         val findings = ConcurrentLinkedQueue<Map<String, Any>>()
 
         val candidates = mutableListOf<File>()
-        val variant = ext.variant.get()
 
-        if (ext.scanApk.get()) {
-            val apkDir = File(project.projectDir, "build/outputs/apk/${variant}")
-            if (apkDir.exists()) {
-                apkDir.listFiles()?.filter { it.extension in listOf("apk") }?.let { candidates.addAll(it) }
+        if (scanApk.get()) {
+
+            val dir = apkDir.get()
+            if (dir.exists()) {
+                dir.listFiles()?.filter { it.extension == "apk" }?.let { candidates.addAll(it) }
             }
         }
-        if (ext.scanBundle.get()) {
-            val bundleDir = File(project.projectDir, "build/outputs/bundle/${variant}")
-            if (bundleDir.exists()) {
-                bundleDir.listFiles()?.filter { it.extension in listOf("aab","zip") }?.let { candidates.addAll(it) }
+        if (scanBundle.get()) {
+            val dir = bundleDir.get()
+            if (dir.exists()) {
+                dir.listFiles()?.filter { it.extension in listOf("aab", "zip") }?.let { candidates.addAll(it) }
             }
         }
 
@@ -43,8 +59,13 @@ open class ScanOutputsTask @Inject constructor(private val workerExecutor: Worke
             logger.warn("No APK/AAB candidates found under build/outputs for variant='$variant'.")
         }
 
-        val parallelism = ext.parallelism.get().coerceAtLeast(1)
+       // val parallelism = parallelism.get().coerceAtLeast(1)
         val svc = workerExecutor.noIsolation()
+
+        logger.lifecycle("Scanning ${candidates.size} artifacts with parallelism=0 ...")
+
+        //print candidates
+        candidates.forEach { logger.lifecycle("  - ${it.name} (lastModified=${it.lastModified()})") }
 
         candidates.sortedBy { it.lastModified() }
             .forEach { file ->
@@ -56,10 +77,10 @@ open class ScanOutputsTask @Inject constructor(private val workerExecutor: Worke
                     val bytes = ZipUtils.readEntryBytes(file, entry)
                     // Submit to worker for parsing ELF
                     svc.submit(SoScanWorkAction::class.java) {
-                        input.set(project.objects.fileProperty().fileValue(file))
+                        input.set(objectFactor.fileProperty().fileValue(file))
                         entryPath.set(entry)
                         this.bytes.set(bytes)
-                        maxAlign.set(ext.maxAlign.get())
+                        maxAlign.set(16384L)
                         reportDir.set(outDir)
                     }
                 }

@@ -6,5 +6,7 @@
  * This project uses @Incubating APIs which are subject to change.
  */
 
-rootProject.name = "plugin-build"
+rootProject.name = "skyhigh-16kb-doctor-plugin"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include("plugin")

@@ -41,9 +41,9 @@ abstract class ScanNativeSoTask : DefaultTask() {
                     """
   {
     "sourceType":"module",
-    "moduleOrDependency":"${dir}",
+    "moduleOrDependency":"$dir",
     "filePath":"$relative",
-    "ownerCoordinate":"${dir}"
+    "ownerCoordinate":"$dir"
   }
 """.trimIndent()
                 )

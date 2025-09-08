@@ -22,7 +22,7 @@ In your Android application module (or app):
 
 ```kotlin
 plugins {
-  id("com.sparrow.skyhigh.16kb-doctor") version "1.0.1"
+    id("io.github.sparrow007.skyhigh.16kb-doctor") version "1.0.0"
 }
 ```
 

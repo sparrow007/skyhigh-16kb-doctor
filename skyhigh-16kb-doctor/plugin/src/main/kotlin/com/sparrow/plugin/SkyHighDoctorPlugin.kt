@@ -17,7 +17,7 @@ class SkyHighDoctorPlugin : Plugin<Project> {
 
         val scanTask = project.tasks.register("skyhighScan", ScanOutputsTask::class.java) {
             notCompatibleWithConfigurationCache("Uses project properties at execution time")
-            group = "verification"
+            group = "SkyHigh 16KB Doctor"
             description = "Scan APK/AAB outputs for native .so libraries"
             this.scanApk.convention(extension.scanApk.get())
             this.scanBundle.convention(extension.scanBundle.get())
@@ -35,7 +35,7 @@ class SkyHighDoctorPlugin : Plugin<Project> {
 
 
         val ownersTask = project.tasks.register("skyhighScanNativeSo", ScanNativeSoTask::class.java) {
-            group = "verification"
+            group = "SkyHigh 16KB Doctor"
             description = "Scan all modules and dependencies for native .so libraries"
 
             val allProjects = project.rootProject.allprojects
@@ -63,7 +63,7 @@ class SkyHighDoctorPlugin : Plugin<Project> {
         }
 
         val reportTask = project.tasks.register("skyhighReport", AggregateReportTask::class.java) {
-            group = "verification"
+            group = "SkyHigh 16KB Doctor"
             description = "Aggregate findings and owners into final reports"
             this.failOnViolation.convention(extension.failOnViolation.getOrElse(false))
             this.perAbiFailList.set(extension.perAbiFailList.getOrElse(emptyList()))
@@ -74,7 +74,7 @@ class SkyHighDoctorPlugin : Plugin<Project> {
         }
 
         project.tasks.register("skyhighDoctor") {
-            group = "verification"
+            group = "SkyHigh 16KB Doctor"
             description = "Run the full SkyHigh 16KB doctor pipeline"
             dependsOn(scanTask, ownersTask, reportTask)
         }

@@ -11,7 +11,7 @@ A Gradle plugin that scans Android APK/AAB outputs for native `.so` libraries, c
 - **Automatic scanning** for 16KB page alignment
 - **Easy integration** with Gradle
 - **Detailed reports** for developers
-- **Kotlin & Java support**
+- **Help Identification** In large complex project it will help list down all the libs 16KB support
 
 
 ## 📦 Installation

@@ -18,30 +18,39 @@ A Gradle plugin that scans Android APK/AAB outputs for native `.so` libraries, c
 
 Add the plugin to your `build.gradle.kts`:
 
-In your Android application module (or app):
+Make sure to add this in your Android application **entry module** (or app):
 
 ```kotlin
 plugins {
-    id("io.github.sparrow007.skyhigh.16kb-doctor") version "1.0.0"
+    id("io.github.sparrow007.skyhigh.16kb-doctor") version "1.0.1"
 }
 ```
 
-## 🛠 Usage
+### 🛠 In Settings.gradle 
+**MaveCentral** should be included in plugin Management repo
 
-After applying the plugin, run:
-
-```
-./gradlew skyhighDoctorPlugin
-
+```kotlin
+pluginManagement {
+    repositories {
+        mavenCentral()
+    }
+}
 ```
 
 ## 🔁 Sync your project
 
 After adding the dependency, click **"Sync Now"** in Android Studio or run the following command in your terminal to sync your project:
 
-```sh
-./gradlew build
+
+## 🛠 Usage
+
+After applying the plugin, run: with your app **entry module** name 
+
 ```
+./gradlew :app:skyhighDoctor
+
+```
+
 
 ## 📝 HTML Report
 
@@ -127,12 +136,12 @@ We welcome contributions to the SkyHigh 16KB Doctor! Here are some ways you can 
 If you find an issue, please open a new issue ticket on GitHub. Please provide as much detail as possible, including steps to reproduce the problem.
 
 
+## 📝 Note:
+This library is in a very early stage, which means there may be edge cases where it doesn’t work as expected. If you encounter any issues, please report them—we’ll review and address them in upcoming versions. Your feedback helps us improve the plugin.
+
 ## Find this repository useful? ❤️
 Support it by joining __[stargazers](https://github.com/sparrow007/skyhigh-16kb-doctor/stargazers)__ for this repository. :star: <br>
  And __[follow](https://github.com/sparrow007)__  me for next creation 🤩
-
-## Thanks
-Your feedback helps us improve the plugin.
 
 ## License
 ```xml

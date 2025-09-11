@@ -1,0 +1,54 @@
+name: CI - Skyhigh 16KB Doctor
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup JDK
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # Cache Gradle dependencies
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # Run Gradle build (checks for errors)
+      - name: Run Gradle build
+        run: ./gradlew build --stacktrace
+
+      # Run your Skyhigh 16KB Doctor task
+      - name: Run Skyhigh 16KB Doctor
+        run: ./gradlew :app:skyhighDoctor
+
+      # Check if report HTML is generated
+      - name: Verify report generated
+        run: |
+          REPORT_PATH="app/build/skyhigh/reports/final/final.html"
+          if [ -f "$REPORT_PATH" ]; then
+            echo "✅ Report generated at $REPORT_PATH"
+          else
+            echo "❌ Report not found!"
+            exit 1
+          fi
+

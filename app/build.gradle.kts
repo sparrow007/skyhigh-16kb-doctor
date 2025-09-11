@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("io.github.sparrow007.skyhigh.16kb-doctor")
+    id("io.github.sparrow007.skyhigh.16kb-doctor") version "1.0.1"
 }
 
 

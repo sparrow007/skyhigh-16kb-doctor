@@ -1,10 +1,11 @@
 # SkyHigh 16KB Doctor
 
-A Gradle plugin that scans Android APK/AAB outputs for native `.so` libraries, checks ELF `p_align` values (16KB target), maps libraries back to owners (module or dependency), and produces machine- and human-friendly reports.
-
 <img width="1472" height="704" alt="Image" src="https://github.com/user-attachments/assets/67afd550-931f-4ea1-8478-8b9c2abce572" />
 
 [![Latest Version on Maven Central](https://img.shields.io/maven-central/v/io.github.sparrow007/skyhigh-16kb-doctor.svg?label=Maven%20Central)](https://search.maven.org/artifact/io.github.sparrow007/skyhigh-16kb-doctor)
+
+## Description
+This plugin analyzes your Android project to identify native libraries (.so files) that are not compatible with the 16KB alignment requirement. It generates a report listing incompatible libraries, their owners, and alignment details, helping developers ensure their app meets 16KB compatibility standards. The plugin can be used as an alternative to custom Lint checks, providing an automated way to verify and maintain proper native library alignment during the build process.
 
 ## 🚀 Features
 

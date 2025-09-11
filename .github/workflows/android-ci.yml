@@ -52,12 +52,25 @@ jobs:
       - name: Run Skyhigh 16KB Doctor
         run: ./gradlew :app:skyhighDoctor
 
+      - name: Upload build directory
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dir
+          path: app/build
+
   verify:
     runs-on: ubuntu-latest
     needs: doctor
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Download build directory
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dir
+          path: app/build
+
       - name: Verify report generated
         run: |
           REPORT_PATH="app/build/skyhigh/reports/final/final.html"

@@ -5,7 +5,7 @@
 [![Latest Version on Maven Central](https://img.shields.io/maven-central/v/io.github.sparrow007/skyhigh-16kb-doctor.svg?label=Maven%20Central)](https://search.maven.org/artifact/io.github.sparrow007/skyhigh-16kb-doctor)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-blueviolet?logo=kotlin&logoColor=white)
 [![Build](https://github.com/sparrow007/skyhigh-16kb-doctor/actions/workflows/android-ci.yml/badge.svg)](https://github.com/sparrow007/skyhigh-16kb-doctor/actions/workflows/android-ci.yml)
-![Gradle](https://img.shields.io/badge/Gradle-8.0.2-green?logo=gradle&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-8.12.2-green?logo=gradle&logoColor=white)
 
 
 ## 📢 Project Description

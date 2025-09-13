@@ -3,16 +3,26 @@
 <img width="1472" height="704" alt="Image" src="https://github.com/user-attachments/assets/67afd550-931f-4ea1-8478-8b9c2abce572" />
 
 [![Latest Version on Maven Central](https://img.shields.io/maven-central/v/io.github.sparrow007/skyhigh-16kb-doctor.svg?label=Maven%20Central)](https://search.maven.org/artifact/io.github.sparrow007/skyhigh-16kb-doctor)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-blueviolet?logo=kotlin&logoColor=white)
+[![Build](https://github.com/sparrow007/skyhigh-16kb-doctor/actions/workflows/android-ci.yml/badge.svg)](https://github.com/sparrow007/skyhigh-16kb-doctor/actions/workflows/android-ci.yml)
+![Gradle](https://img.shields.io/badge/Gradle-8.0.2-green?logo=gradle&logoColor=white)
 
-## Description
-This plugin analyzes your Android project to identify native libraries (.so files) that are not compatible with the 16KB alignment requirement. It generates a report listing incompatible libraries, their owners, and alignment details, helping developers ensure their app meets 16KB compatibility standards. The plugin can be used as an alternative to custom Lint checks, providing an automated way to verify and maintain proper native library alignment during the build process.
 
-## 🚀 Features
+## 📢 Project Description
 
-- **Automatic scanning** for 16KB page alignment
-- **Easy integration** with Gradle
-- **Detailed reports** for developers
-- **Help Identification** In large complex project it will help list down all the libs 16KB support
+This plugin is built with Gradle Kotlin DSL and written entirely in Kotlin, making it easy to integrate and maintain within modern Android projects.
+It analyzes your Android project to identify native libraries (.so files) that are not compatible with the 16KB alignment requirement. The plugin then generates a clear report with:
+
+- Incompatible libraries
+- 16 KB Alignment
+- Helps with large multi-module projects
+- Cover all the CPU types (x86, x86_64, arm64-v8a, armeabi-v7a)
+
+## ⚡ Why use it?
+
+- Saves hours of manual investigation
+- Works as an alternative to custom Lint checks
+- Automates verification of native library alignment during the build process
 
 
 ## 📦 Installation

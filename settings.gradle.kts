@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("skyhigh-16kb-doctor")
     repositories {
         google {
             content {
@@ -30,4 +31,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "skyhigh-16kb-doctor"
 include(":app")
-includeBuild("skyhigh-16kb-doctor")

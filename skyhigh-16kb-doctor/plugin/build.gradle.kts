@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     `java-gradle-plugin`
@@ -15,14 +18,17 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain { languageVersion.set(JavaLanguageVersion.of(17)) }
 }
 
-kotlin {
-    jvmToolchain(21)
+// Kotlin toolchain + bytecode target 17
+kotlin { jvmToolchain(17) }
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
 }
-
+tasks.withType<JavaCompile>().configureEach {
+    options.release.set(17)
+}
 dependencies {
     implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.20")

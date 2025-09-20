@@ -16,20 +16,14 @@ class SkyHighDoctorPlugin : Plugin<Project> {
         val extension = project.extensions.create("skyhighDoctor", DoctorExtension::class.java, project.objects)
 
         val scanTask = project.tasks.register("skyhighScan", ScanOutputsTask::class.java) {
-            notCompatibleWithConfigurationCache("Uses project properties at execution time")
             group = "SkyHigh 16KB Doctor"
             description = "Scan APK/AAB outputs for native .so libraries"
             this.scanApk.convention(extension.scanApk.get())
             this.scanBundle.convention(extension.scanBundle.get())
             this.variant.convention(extension.variant.get())
-            this.apkDir.set(
-                File(
-                    project.projectDir,
-                    "build/outputs/apk/${extension.variant.get()}"
-                )
-            )
-            this.bundleDir.set(File(project.projectDir, "build/outputs/bundle/${extension.variant.get()}"))
-            this.outputDir.set(project.layout.buildDirectory.dir("skyhigh/reports/scan").get().asFile)
+            this.apkDirPath.set("${project.projectDir}/build/outputs/apk/${extension.variant.get()}")
+            this.bundleDirPath.set("${project.projectDir}/build/outputs/bundle/${extension.variant.get()}")
+            this.outputDir.set(project.layout.buildDirectory.dir("skyhigh/reports/scan"))
             dependsOn("assemble")
         }
 

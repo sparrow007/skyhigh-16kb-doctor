@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
         webView.settings.domStorageEnabled = true
         webView.settings.allowFileAccess = true
         webView.settings.allowContentAccess = true
+
+        // Disable caching to ensure fresh content
+        webView.settings.cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
     }
 
     private fun loadReport() {
@@ -87,6 +90,15 @@ class MainActivity : AppCompatActivity() {
             val inputStream = assets.open("skyhigh_report.html")
             val content = inputStream.bufferedReader().use { it.readText() }
             Log.d("MainActivity", "Report loaded from assets, size: ${content.length} characters")
+
+            // Log a snippet of the content to verify it's correct
+            val snippet = content.take(200).replace("\n", " ")
+            Log.d("MainActivity", "Content snippet: $snippet...")
+
+            // Check if the report has actual data (more than just the empty table)
+            val hasData = content.contains("<tr>") && content.indexOf("<tr>") != content.lastIndexOf("<tr>")
+            Log.d("MainActivity", "Report has data: $hasData")
+
             content
         } catch (e: Exception) {
             Log.w("MainActivity", "Could not load report from assets: ${e.message}")
@@ -95,7 +107,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadReportContent(htmlContent: String) {
-        webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
+        // Clear any existing content first
+        webView.clearCache(true)
+        webView.clearHistory()
+
+        // Add timestamp to ensure fresh content
+        val timestamp = System.currentTimeMillis()
+        val contentWithTimestamp = htmlContent.replace(
+            "<h1>SkyHigh 16KB Doctor Report</h1>",
+            "<h1>SkyHigh 16KB Doctor Report</h1><p><small>Generated: ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date(timestamp))}</small></p>"
+        )
+
+        Log.d("MainActivity", "Loading report content with timestamp: $timestamp")
+        webView.loadDataWithBaseURL(null, contentWithTimestamp, "text/html", "UTF-8", null)
     }
 
     private fun loadInstructionsContent() {

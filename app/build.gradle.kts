@@ -100,3 +100,23 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 }
+
+// Create a solid task that uses shell script for reliable execution
+tasks.register<Exec>("runWithFreshReport") {
+    group = "SkyHigh 16KB Doctor"
+    description = "Build, generate fresh report, and run the app (reliable two-stage build)"
+
+    commandLine("./run-with-fresh-report.sh")
+    workingDir = project.rootDir
+
+    doFirst {
+        println("🚀 Starting reliable build process with fresh SkyHigh Doctor report...")
+    }
+}
+
+// Keep the automatic report generation for regular builds
+afterEvaluate {
+    tasks.matching { it.name.startsWith("assemble") }.configureEach {
+        finalizedBy("skyhighDoctor")
+    }
+}

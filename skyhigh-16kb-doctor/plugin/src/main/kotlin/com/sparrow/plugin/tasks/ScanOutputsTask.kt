@@ -3,6 +3,7 @@ package com.sparrow.plugin.tasks
 import com.sparrow.plugin.util.ZipUtils
 import com.sparrow.plugin.worker.SoScanWorkAction
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -27,29 +28,28 @@ abstract class ScanOutputsTask @Inject constructor(
     abstract val scanBundle: Property<Boolean>
 
     @get:Input
-    abstract val apkDir: Property<File>
+    abstract val apkDirPath: Property<String>
 
     @get:Input
-    abstract val bundleDir: Property<File>
+    abstract val bundleDirPath: Property<String>
 
     @get:OutputDirectory
-    abstract val outputDir: Property<File>
+    abstract val outputDir: DirectoryProperty
 
     @TaskAction
     fun scan() {
-        val outDir = outputDir.get().apply { mkdirs() }
+        val outDir = outputDir.get().asFile.apply { mkdirs() }
 
         val candidates = mutableListOf<File>()
 
         if (scanApk.get()) {
-
-            val dir = apkDir.get()
+            val dir = File(apkDirPath.get())
             if (dir.exists()) {
                 dir.listFiles()?.filter { it.extension == "apk" }?.let { candidates.addAll(it) }
             }
         }
         if (scanBundle.get()) {
-            val dir = bundleDir.get()
+            val dir = File(bundleDirPath.get())
             if (dir.exists()) {
                 dir.listFiles()?.filter { it.extension in listOf("aab", "zip") }?.let { candidates.addAll(it) }
             }

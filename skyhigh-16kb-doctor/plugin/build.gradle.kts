@@ -68,7 +68,7 @@ mavenPublishing {
 }
 
 mavenPublishing {
-    coordinates("io.github.sparrow007", "skyhigh-16kb-doctor", "1.0.1")
+    coordinates("io.github.sparrow007", "skyhigh-16kb-doctor", "1.0.2")
 
     pom {
         name.set("SkyHigh 16KB Doctor")

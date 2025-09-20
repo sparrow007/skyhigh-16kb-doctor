@@ -17,6 +17,7 @@ It analyzes your Android project to identify native libraries (.so files) that a
 - 16 KB Alignment
 - Helps with large multi-module projects
 - Cover all the CPU types (x86, x86_64, arm64-v8a, armeabi-v7a)
+- Support JDK 17 For Running 
 
 ## ⚡ Why use it?
 
@@ -33,7 +34,7 @@ Make sure to add this in your Android application **entry module** (or app):
 
 ```kotlin
 plugins {
-    id("io.github.sparrow007.skyhigh.16kb-doctor") version "1.0.1"
+    id("io.github.sparrow007.skyhigh.16kb-doctor") version "1.0.2"
 }
 ```
 

@@ -95,6 +95,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("androidx.media3:media3-exoplayer:1.4.1")
     implementation("org.tensorflow:tensorflow-lite:2.16.1")
+    implementation("androidx.camera:camera-core:1.5.0-beta01")
 
     // Coroutines for async operations
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")

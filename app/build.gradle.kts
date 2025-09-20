@@ -115,9 +115,3 @@ tasks.register<Exec>("runWithFreshReport") {
     }
 }
 
-// Keep the automatic report generation for regular builds
-afterEvaluate {
-    tasks.matching { it.name.startsWith("assemble") }.configureEach {
-        finalizedBy("skyhighDoctor")
-    }
-}

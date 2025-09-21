@@ -178,15 +178,15 @@ class MainActivity : AppCompatActivity() {
                 try {
                     val pdfFile = createPdfFromHtml(content)
                     withContext(Dispatchers.Main) {
-                        showToast("📄 PDF saved: ${pdfFile.name}")
+                        showToast("PDF saved: ${pdfFile.name}")
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        showToast("❌ Error creating PDF: ${e.message}")
+                        showToast("Error creating PDF: ${e.message}")
                     }
                 }
             }
-        } ?: showToast("❌ No report available")
+        } ?: showToast("No report available")
     }
 
     private fun shareReport() {
@@ -199,11 +199,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        showToast("❌ Error sharing: ${e.message}")
+                        showToast("Error sharing: ${e.message}")
                     }
                 }
             }
-        } ?: showToast("❌ No report available")
+        } ?: showToast("No report available")
     }
 
     private suspend fun createPdfFromHtml(htmlContent: String): File = withContext(Dispatchers.IO) {

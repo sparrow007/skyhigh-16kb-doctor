@@ -8,7 +8,6 @@ plugins {
     signing
     id("com.gradle.plugin-publish") version "1.2.1"
     kotlin("jvm") version "1.9.20"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.20"
     id("com.vanniktech.maven.publish") version "0.34.0"
 }
 
@@ -31,13 +30,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 dependencies {
     implementation(gradleApi())
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.20")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-    testImplementation("io.mockk:mockk:1.13.8")
     testImplementation(gradleTestKit())
-    testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
 sourceSets {
@@ -74,7 +67,7 @@ mavenPublishing {
 }
 
 mavenPublishing {
-    coordinates("io.github.sparrow007", "skyhigh-16kb-doctor", "1.0.2")
+    coordinates("io.github.sparrow007", "skyhigh-16kb-doctor", "1.0.2-test")
 
     pom {
         name.set("SkyHigh 16KB Doctor")

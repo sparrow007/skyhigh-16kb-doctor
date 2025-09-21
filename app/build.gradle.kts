@@ -33,10 +33,10 @@ abstract class CopySkyHighReportTask : DefaultTask() {
 
             // Copy the file
             source.copyTo(target, overwrite = true)
-            println("✅ SkyHigh Doctor report copied to assets: ${target.absolutePath}")
+            println("SkyHigh Doctor report copied to assets: ${target.absolutePath}")
         } else {
-            println("❌ SkyHigh Doctor report not found at: ${source.absolutePath}")
-            println("ℹ️  Run './gradlew :app:skyhighDoctor' first to generate the report")
+            println("SkyHigh Doctor report not found at: ${source.absolutePath}")
+            println("Run './gradlew :app:skyhighDoctor' first to generate the report")
         }
     }
 }
@@ -111,7 +111,7 @@ tasks.register<Exec>("runWithFreshReport") {
     workingDir = project.rootDir
 
     doFirst {
-        println("🚀 Starting reliable build process with fresh SkyHigh Doctor report...")
+        println("Starting build process with fresh SkyHigh Doctor report...")
     }
 }
 

@@ -48,12 +48,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupWebView() {
-        webView.webViewClient = WebViewClient()
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                // Zoom out to fit content width after page loads
+                view?.zoomOut()
+            }
+        }
         webView.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
             allowFileAccess = true
             allowContentAccess = true
+
+            // Zoom settings for complete zoom out
+            setSupportZoom(true)
+            builtInZoomControls = true
+            displayZoomControls = false
+            useWideViewPort = true
+            loadWithOverviewMode = true
+
+
         }
     }
 

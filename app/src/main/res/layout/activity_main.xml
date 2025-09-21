@@ -4,50 +4,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#f5f5f5"
+    android:background="#f8f9fa"
     tools:context=".MainActivity">
 
-    <!-- Header -->
+    <!-- Header with Action Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
+        android:orientation="vertical"
         android:background="@color/design_default_color_primary"
-        android:elevation="4dp">
+        android:elevation="8dp">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="SkyHigh 16KB Doctor"
+            android:text="🚀 SkyHigh 16KB Doctor"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:gravity="center_vertical" />
+            android:gravity="center"
+            android:padding="20dp" />
 
-        <Button
-            android:id="@+id/btnGenerate"
-            android:layout_width="wrap_content"
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reload Report"
-            android:textColor="@android:color/white"
-            android:background="@color/design_default_color_primary_dark"
-            android:padding="12dp"
-            android:layout_marginStart="8dp" />
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:paddingTop="0dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnDownload"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="📄 Download PDF"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="#4CAF50"
+                android:layout_marginEnd="8dp"
+                android:enabled="false"
+                android:alpha="0.5" />
+
+            <Button
+                android:id="@+id/btnShare"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="📤 Share Report"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="#FF9800"
+                android:layout_marginStart="8dp"
+                android:enabled="false"
+                android:alpha="0.5" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <!-- Progress Bar -->
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:indeterminate="true" />
 
     <!-- WebView for Report -->
     <WebView
@@ -57,6 +74,6 @@
         android:layout_weight="1"
         android:layout_margin="8dp"
         android:background="@android:color/white"
-        android:elevation="2dp" />
+        android:elevation="4dp" />
 
 </LinearLayout>

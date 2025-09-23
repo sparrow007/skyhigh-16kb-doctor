@@ -23,13 +23,16 @@ class SkyHighDoctorPlugin : Plugin<Project> {
             this.scanBundle.convention(extension.scanBundle.get())
             this.variant.convention(extension.variant.get())
             this.apkDir.set(
-                File(
-                    project.projectDir,
-                    "build/outputs/apk/${extension.variant.get()}"
-                )
+                project.layout.projectDirectory.dir("build/outputs/apk").dir(extension.variant)
             )
-            this.bundleDir.set(File(project.projectDir, "build/outputs/bundle/${extension.variant.get()}"))
-            this.outputDir.set(project.layout.buildDirectory.dir("skyhigh/reports/scan").get().asFile)
+            // Only set bundleDir if we're actually scanning bundles
+            if (extension.scanBundle.get()) {
+                this.bundleDir.set(
+                    project.layout.projectDirectory.dir("build/outputs/bundle").dir(extension.variant)
+                )
+                dependsOn("bundleDebug")
+            }
+            this.outputDir.set(project.layout.buildDirectory.dir("skyhigh/reports/scan"))
             dependsOn("assemble")
         }
 

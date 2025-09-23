@@ -1,0 +1,57 @@
+<html>
+<head>
+    <title>SkyHigh 16KB Doctor Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f4f4f4; }
+        tr:nth-child(even) { background: #fafafa; }
+    </style>
+</head>
+<body>
+    <h1>SkyHigh 16KB Doctor Report</h1>
+    <table>
+        <tr>
+            <th>Artifact</th>
+            <th>Path</th>
+            <th>ABI</th>
+            <th>p_align</th>
+            <th>16kb Compatible</th>
+            <th>Owner</th>
+            <th>Remediation</th>
+        </tr><tr>
+    <td>app-debug.apk</td>
+    <td>lib/x86/libtensorflowlite_jni.so</td>
+    <td>x86</td>
+    <td>4096</td>
+    <td>false</td>
+    <td>tensorflow-lite-2.16.1.aar</td>
+    <td>Unknown owner. Rebuild native library with increased p_align or contact binary vendor.</td>
+</tr><tr>
+    <td>app-debug.apk</td>
+    <td>lib/x86_64/libtensorflowlite_jni.so</td>
+    <td>x86_64</td>
+    <td>4096</td>
+    <td>false</td>
+    <td>tensorflow-lite-2.16.1.aar</td>
+    <td>Unknown owner. Rebuild native library with increased p_align or contact binary vendor.</td>
+</tr><tr>
+    <td>app-debug.apk</td>
+    <td>lib/arm64-v8a/libtensorflowlite_jni.so</td>
+    <td>arm64-v8a</td>
+    <td>4096</td>
+    <td>false</td>
+    <td>tensorflow-lite-2.16.1.aar</td>
+    <td>Unknown owner. Rebuild native library with increased p_align or contact binary vendor.</td>
+</tr><tr>
+    <td>app-debug.apk</td>
+    <td>lib/armeabi-v7a/libtensorflowlite_jni.so</td>
+    <td>armeabi-v7a</td>
+    <td>4096</td>
+    <td>false</td>
+    <td>tensorflow-lite-2.16.1.aar</td>
+    <td>Unknown owner. Rebuild native library with increased p_align or contact binary vendor.</td>
+</tr>    </table>
+</body>
+</html>

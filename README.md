@@ -68,6 +68,20 @@ After applying the plugin, run: with your app **entry module** name
 
 <img width="1884" height="278" alt="Image" src="https://github.com/user-attachments/assets/0558b9ca-7617-44f2-8e2e-10cf6408f69c" />
 
+
+### 🚀 Test dependencies fast using this project.
+
+You can now directly test any new dependency in this project's **app module** without importing the full plugin into a large project.
+
+Simply add the dependency you want to test in this project's app-level `build.gradle.kts`, then run:
+
+```
+./gradlew :app:runWithFreshReport
+
+```
+
+This command will build the app, generate a fresh report, and launch the app with the latest report.
+
 <h2>📊 Report Column Explanation</h2>
 
 <table>

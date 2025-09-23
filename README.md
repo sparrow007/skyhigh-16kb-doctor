@@ -77,10 +77,11 @@ Simply add the dependency you want to test in this project's app-level `build.gr
 
 ```
 ./gradlew :app:runWithFreshReport
-
 ```
 
 This command will build the app, generate a fresh report, and launch the app with the latest report.
+<img width="3280" height="2048" alt="collage_landscape" src="https://github.com/user-attachments/assets/ef97d4b9-218b-4131-bd3e-dc183c90a2a3" />
+
 
 <h2>📊 Report Column Explanation</h2>
 

@@ -2,6 +2,7 @@ name: Manual Publish to Maven
 
 on:
   workflow_dispatch:
+  pull_request:
 
 jobs:
   manual-publish:
@@ -19,6 +20,7 @@ jobs:
 
       - name: Publish to Maven
         run: ./gradlew publishToMavenCentral
+        working-directory: skyhigh-16kb-doctor
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSSRH_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_PASSWORD }}
